@@ -74,3 +74,7 @@ func (m *MockClient) TestMempoolAccept(rawTx []byte) (bool, error) {
 func (m *MockClient) SendRawTransaction(rawTx []byte) (*chainhash.Hash, error) {
 	return m.txToSend[hex.EncodeToString(rawTx)], nil
 }
+
+func (m *MockClient) GetTxOut(txHash *chainhash.Hash, index uint32, mempool bool) (*btcjson.GetTxOutResult, error) {
+	return nil, nil
+}

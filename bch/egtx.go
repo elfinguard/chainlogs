@@ -90,8 +90,11 @@ func convertToByte20(o []byte) [20]byte {
 	return out
 }
 
-func BuildLogData(confirmations *uint256.Int, outputInfoArray [][32]byte,
-	inputInfoArray [][32]byte, outputTokenInfos, inputTokenInfos []TokenInfo, otherDataInOpReturn [][]byte) []byte {
+func BuildLogData(confirmations *uint256.Int,
+	outputInfoArray, inputInfoArray [][32]byte,
+	outputTokenInfos, inputTokenInfos []TokenInfo,
+	otherDataInOpReturn [][]byte,
+) []byte {
 	var outputInfos = make([]*big.Int, len(outputInfoArray))
 	for i, output := range outputInfoArray {
 		outputInfos[i] = uint256.NewInt(0).SetBytes32(output[:]).ToBig()

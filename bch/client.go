@@ -22,6 +22,7 @@ type IBchClient interface {
 	GetBlockVerboseTx(blockHash *chainhash.Hash) (*btcjson.GetBlockVerboseTxResult, error)
 	TestMempoolAccept(rawTx []byte) (bool, error)
 	SendRawTransaction(rawTx []byte) (*chainhash.Hash, error)
+	GetTxOut(txHash *chainhash.Hash, index uint32, mempool bool) (*btcjson.GetTxOutResult, error)
 }
 
 type RetryableClient struct {
@@ -155,6 +156,18 @@ func (r *RetryableClient) SendRawTransaction(rawTx []byte) (txHash *chainhash.Ha
 		txHash, err = r.client.SendRawSerializedTransaction(hex.EncodeToString(rawTx), true)
 		if err == nil {
 			r.logger.Debug("sendRawTransaction", "txHash", txHash)
+			return
+		}
+		r.Delay()
+	}
+	return
+}
+
+func (r *RetryableClient) GetTxOut(txHash *chainhash.Hash, index uint32, mempool bool) (txOut *btcjson.GetTxOutResult, err error) {
+	for i := 0; i < r.maxRetry; i++ {
+		txOut, err = r.client.GetTxOut(txHash, index, mempool)
+		if err == nil {
+			r.logger.Debug("GetTxOut", "txHash", txHash, "index", index, "mempool", mempool)
 			return
 		}
 		r.Delay()
