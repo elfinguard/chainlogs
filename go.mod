@@ -97,4 +97,4 @@ require (
 // https://rizalgowandy.medium.com/go-mod-cheat-sheet-2a79efc10a52#388d
 replace github.com/btcsuite/btcd v0.22.0-beta => github.com/btcsuite/btcd v0.23.3
 
-replace github.com/gcash/bchd v0.19.0 => github.com/wangkui0508/bchd v0.0.0-20230804032905-5efd76826e51
+replace github.com/gcash/bchd v0.19.0 => github.com/wangkui0508/bchd v0.0.0-20231024075024-b80126c2fc20
