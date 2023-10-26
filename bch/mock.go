@@ -15,6 +15,7 @@ type MockClient struct {
 	txByHash   map[chainhash.Hash]*btcjson.TxRawResult
 	txToAccept map[string]bool
 	txToSend   map[string]*chainhash.Hash
+	txOuts     map[[33]byte]*btcjson.GetTxOutResult
 }
 
 func (m *MockClient) AddTx(txHash *chainhash.Hash, tx *btcjson.TxRawResult) {
@@ -37,6 +38,16 @@ func (m *MockClient) AddTxToSend(rawTx string, txHash *chainhash.Hash) {
 		m.txToSend = map[string]*chainhash.Hash{}
 	}
 	m.txToSend[rawTx] = txHash
+}
+
+func (m *MockClient) AddTxOut(txHash *chainhash.Hash, index uint32, result *btcjson.GetTxOutResult) {
+	if m.txOuts == nil {
+		m.txOuts = map[[33]byte]*btcjson.GetTxOutResult{}
+	}
+	var key [33]byte
+	copy(key[:], (*txHash)[:])
+	key[32] = byte(index)
+	m.txOuts[key] = result
 }
 
 func (m *MockClient) GetBlockVerboseTx(blockHash *chainhash.Hash) (*btcjson.GetBlockVerboseTxResult, error) {
@@ -76,5 +87,8 @@ func (m *MockClient) SendRawTransaction(rawTx []byte) (*chainhash.Hash, error) {
 }
 
 func (m *MockClient) GetTxOut(txHash *chainhash.Hash, index uint32, mempool bool) (*btcjson.GetTxOutResult, error) {
-	return nil, nil
+	var key [33]byte
+	copy(key[:], (*txHash)[:])
+	key[32] = byte(index)
+	return m.txOuts[key], nil
 }
